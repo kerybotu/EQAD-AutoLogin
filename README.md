@@ -32,6 +32,10 @@ AES本地加密:         支持（即使文件被复制也无法解密）
 
 完全开源 MIT:         支持
 
+<img width="773" height="478" alt="image" src="https://github.com/user-attachments/assets/cf00174e-71f4-4cc0-b57b-7e58a3fac7a2" />
+
+<img width="781" height="178" alt="image" src="https://github.com/user-attachments/assets/cf53ed6f-056d-4121-a706-5b5c70e407ab" />
+
 支持服务器（自动识别）:
 
     - vanilla.eqad.fun
