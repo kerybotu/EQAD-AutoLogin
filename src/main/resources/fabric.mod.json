@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "eqad-autologin",
+  "version": "2.0.0",
+  "name": "EQAD AutoLogin",
+  "description": "为EQAD纯净服提供丝滑自动登录,支持多账号独立加密存储",
+  "authors": [
+    "495pygly"
+  ],
+  "contact": {
+    "homepage": "https://github.com/kerybotu/EQAD-AutoLogin",
+    "sources": "https://github.com/kerybotu/EQAD-AutoLogin",
+    "issues": "https://github.com/kerybotu/EQAD-AutoLogin/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/eqad-autologin/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.pygly.eqadautologin.EQADAutoLoginClient"
+    ]
+  },
+  "mixins": [
+    "eqad-autologin.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "1.20.1",
+    "java": ">=17",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "modmenu": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.github": "https://github.com/kerybotu/EQAD-AutoLogin"
+      },
+      "badges": [
+        "library"
+      ]
+    }
+  }
+}
