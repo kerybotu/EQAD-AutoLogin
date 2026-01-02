@@ -46,6 +46,9 @@ public class EQADAutoLogin {
     private static int autoMenuDelay = 0;
     private static boolean needAutoMenu = false;
 
+    private static int autoSubServerDelay = 0;
+    private static boolean needAutoSubServer = false;
+
     private static boolean hasAutoLoggedInThisSession = false;
 
     public static ModConfig getConfig() {
@@ -68,8 +71,13 @@ public class EQADAutoLogin {
                     autoLoginDelay = 20;
                     needAutoLogin = true;
 
+                    if (config.autoJoinSubServerEnabled) {
+                        autoSubServerDelay = 30;
+                        needAutoSubServer = true;
+                    }
+
                     if (config.autoOpenMenuEnabled) {
-                        autoMenuDelay = 30;
+                        autoMenuDelay = 60;
                         needAutoMenu = true;
                     }
                 } else {
@@ -105,6 +113,14 @@ public class EQADAutoLogin {
                 if (autoLoginDelay == 0 && needAutoLogin) {
                     performAutoLogin(client);
                     needAutoLogin = false;
+                }
+            }
+
+            if (autoSubServerDelay > 0) {
+                autoSubServerDelay--;
+                if (autoSubServerDelay == 0 && needAutoSubServer) {
+                    performAutoJoinSubServer(client);
+                    needAutoSubServer = false;
                 }
             }
 
@@ -154,6 +170,28 @@ public class EQADAutoLogin {
             }
 
             performLoginCommand(client, pwd);
+        });
+    }
+
+    private static void performAutoJoinSubServer(MinecraftClient client) {
+        client.execute(() -> {
+            ClientPlayerEntity player = client.player;
+            if (player == null || player.networkHandler == null) {
+                autoSubServerDelay = 10;
+                needAutoSubServer = true;
+                return;
+            }
+
+            try {
+                String targetServer = config.targetSubServer;
+                String displayName = config.getSubServerDisplayName();
+                player.networkHandler.sendCommand("server " + targetServer);
+                client.inGameHud.getChatHud().addMessage(Text.literal("§a" + CHAT_PREFIX + " 正在自动进入" + displayName + "..."));
+                LOGGER.info("玩家 {} 自动跨服指令已发送: /server {}", player.getName().getString(), targetServer);
+            } catch (Exception e) {
+                LOGGER.error("发送跨服指令失败!", e);
+                client.inGameHud.getChatHud().addMessage(Text.literal("§c" + CHAT_PREFIX + " 自动跨服失败!"));
+            }
         });
     }
 
