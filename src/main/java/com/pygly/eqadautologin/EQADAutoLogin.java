@@ -41,6 +41,7 @@ public class EQADAutoLogin {
     private static int autoLoginDelay = 0;
     private static boolean needAutoLogin = false;
     private static boolean initialCheckDone = false;
+<<<<<<< HEAD
     private static ModConfig config;
 
     private static int autoMenuDelay = 0;
@@ -89,6 +90,20 @@ public class EQADAutoLogin {
             LOGGER.info("玩家已断开连接,重置自动登录状态");
         });
 
+=======
+
+    public static void registerEvents() {
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            loadKeyAndPassword(client);
+            String address = client.getCurrentServerEntry() != null ? client.getCurrentServerEntry().address : "";
+            if (TARGET_SERVERS.contains(address)) {
+                client.inGameHud.getChatHud().addMessage(Text.literal("§e" + CHAT_PREFIX + " 检测到纯净服，1秒后自动登录..."));
+                autoLoginDelay = 20;
+                needAutoLogin = true;
+            }
+        });
+
+>>>>>>> 9364315c26418d333dbb8088a04b210dffa2548f
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (!initialCheckDone && client.getSession() != null) {
                 initialCheckDone = true;
@@ -99,7 +114,10 @@ public class EQADAutoLogin {
                     }
                 });
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9364315c26418d333dbb8088a04b210dffa2548f
             if (autoLoginDelay > 0) {
                 autoLoginDelay--;
                 if (autoLoginDelay == 0 && needAutoLogin) {
@@ -107,6 +125,7 @@ public class EQADAutoLogin {
                     needAutoLogin = false;
                 }
             }
+<<<<<<< HEAD
 
             if (autoMenuDelay > 0) {
                 autoMenuDelay--;
@@ -115,6 +134,8 @@ public class EQADAutoLogin {
                     needAutoMenu = false;
                 }
             }
+=======
+>>>>>>> 9364315c26418d333dbb8088a04b210dffa2548f
         });
 
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
@@ -157,6 +178,7 @@ public class EQADAutoLogin {
         });
     }
 
+<<<<<<< HEAD
     private static void performAutoOpenMenu(MinecraftClient client) {
         client.execute(() -> {
             ClientPlayerEntity player = client.player;
@@ -177,17 +199,27 @@ public class EQADAutoLogin {
         });
     }
 
+=======
+>>>>>>> 9364315c26418d333dbb8088a04b210dffa2548f
     public static void performLoginCommand(MinecraftClient client, String password) {
         ClientPlayerEntity player = client.player;
         if (player == null || player.networkHandler == null) return;
 
         try {
             player.networkHandler.sendCommand("l " + password);
+<<<<<<< HEAD
             client.inGameHud.getChatHud().addMessage(Text.literal("§a" + CHAT_PREFIX + " 自动登录指令已发送!"));
             LOGGER.info("玩家 {} 登录指令已发送", player.getName().getString());
         } catch (Exception e) {
             LOGGER.error("发送登录指令失败!", e);
             client.inGameHud.getChatHud().addMessage(Text.literal("§c" + CHAT_PREFIX + " 自动登录失败!请手动输入。"));
+=======
+            client.inGameHud.getChatHud().addMessage(Text.literal("§a" + CHAT_PREFIX + " 自动登录指令已发送！"));
+            LOGGER.info("玩家 {} 登录指令已发送", player.getName().getString());
+        } catch (Exception e) {
+            LOGGER.error("发送登录指令失败！", e);
+            client.inGameHud.getChatHud().addMessage(Text.literal("§c" + CHAT_PREFIX + " 自动登录失败！请手动输入。"));
+>>>>>>> 9364315c26418d333dbb8088a04b210dffa2548f
         }
     }
 
@@ -276,7 +308,11 @@ public class EQADAutoLogin {
             cipher.init(Cipher.DECRYPT_MODE, aesKey);
             return new String(cipher.doFinal(Base64.getDecoder().decode(encrypted)), "UTF-8");
         } catch (Exception e) {
+<<<<<<< HEAD
             LOGGER.warn("密码解密失败,密钥可能已更改或文件损坏", e);
+=======
+            LOGGER.warn("密码解密失败，密钥可能已更改或文件损坏", e);
+>>>>>>> 9364315c26418d333dbb8088a04b210dffa2548f
             return "";
         }
     }

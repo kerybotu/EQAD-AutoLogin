@@ -28,6 +28,10 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
+<<<<<<< HEAD
+=======
+    // ❗ 核心修正：添加专门的屏幕 API 依赖，用于解决 ScreenAddButtonEvents 找不到的问题
+>>>>>>> 9364315c26418d333dbb8088a04b210dffa2548f
     modImplementation "net.fabricmc.fabric-api:fabric-screen-api-v1:${project.fabric_version}"
 
 }
@@ -78,4 +82,11 @@ publishing {
         // The repositories here will be used for publishing your artifact, not for
         // retrieving dependencies.
     }
+<<<<<<< HEAD
 }
+=======
+}
+// ----------------------------------------------------
+// ❗ 原来的重复 dependencies 块已被移除
+// ----------------------------------------------------
+>>>>>>> 9364315c26418d333dbb8088a04b210dffa2548f

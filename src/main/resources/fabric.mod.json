@@ -1,9 +1,15 @@
 {
   "schemaVersion": 1,
   "id": "eqad-autologin",
+<<<<<<< HEAD
   "version": "2.0.0",
   "name": "EQAD AutoLogin",
   "description": "为EQAD纯净服提供丝滑自动登录,支持多账号独立加密存储",
+=======
+  "version": "1.1.0",
+  "name": "EQAD AutoLogin",
+  "description": "为EQAD纯净服提供丝滑自动登录，支持多账号独立加密存储",
+>>>>>>> 9364315c26418d333dbb8088a04b210dffa2548f
   "authors": [
     "495pygly"
   ],
@@ -20,9 +26,12 @@
       "com.pygly.eqadautologin.EQADAutoLoginClient"
     ]
   },
+<<<<<<< HEAD
   "mixins": [
     "eqad-autologin.mixins.json"
   ],
+=======
+>>>>>>> 9364315c26418d333dbb8088a04b210dffa2548f
   "depends": {
     "fabricloader": ">=0.16.0",
     "minecraft": "1.20.1",
