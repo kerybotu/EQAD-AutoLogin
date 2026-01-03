@@ -1,3 +1,4 @@
+// src/main/java/com/pygly/eqadautologin/EQADAutoLogin.java
 package com.pygly.eqadautologin;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -67,23 +68,26 @@ public class EQADAutoLogin {
 
             if (TARGET_SERVERS.contains(address) && !hasAutoLoggedInThisSession) {
                 if (config.autoLoginEnabled) {
-                    client.inGameHud.getChatHud().addMessage(Text.literal("§e" + CHAT_PREFIX + " 检测到纯净服,1秒后自动登录..."));
-                    autoLoginDelay = 20;
+                    double loginSeconds = config.loginDelayTicks / 20.0;
+                    client.inGameHud.getChatHud().addMessage(
+                            Text.literal(String.format("§e%s 检测到纯净服,%.1f秒后自动登录...", CHAT_PREFIX, loginSeconds))
+                    );
+                    autoLoginDelay = config.loginDelayTicks;
                     needAutoLogin = true;
 
                     if (config.autoJoinSubServerEnabled) {
-                        autoSubServerDelay = 30;
+                        autoSubServerDelay = config.subServerDelayTicks;
                         needAutoSubServer = true;
                     }
 
                     if (config.autoOpenMenuEnabled) {
-                        autoMenuDelay = 60;
+                        autoMenuDelay = config.openMenuDelayTicks;
                         needAutoMenu = true;
                     }
                 } else {
                     if (config.autoOpenMenuEnabled) {
                         client.inGameHud.getChatHud().addMessage(Text.literal("§e" + CHAT_PREFIX + " 检测到纯净服,即将自动打开服务器菜单..."));
-                        autoMenuDelay = 20;
+                        autoMenuDelay = config.openMenuDelayTicks;
                         needAutoMenu = true;
                     }
                 }
@@ -157,7 +161,7 @@ public class EQADAutoLogin {
         client.execute(() -> {
             ClientPlayerEntity player = client.player;
             if (player == null || player.networkHandler == null) {
-                autoLoginDelay = 20;
+                autoLoginDelay = config.loginDelayTicks;
                 needAutoLogin = true;
                 return;
             }
@@ -199,7 +203,7 @@ public class EQADAutoLogin {
         client.execute(() -> {
             ClientPlayerEntity player = client.player;
             if (player == null || player.networkHandler == null) {
-                autoMenuDelay = 20;
+                autoMenuDelay = config.openMenuDelayTicks;
                 needAutoMenu = true;
                 return;
             }
@@ -272,7 +276,6 @@ public class EQADAutoLogin {
             LOGGER.error("加载玩家配置失败", e);
         }
     }
-
     public static void savePasswords(MinecraftClient client) {
         if (client.getSession() == null) return;
 

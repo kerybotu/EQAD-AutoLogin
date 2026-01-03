@@ -23,7 +23,7 @@ public class ConfigScreen extends Screen {
         this.clearChildren();
 
         int centerX = this.width / 2;
-        int startY = this.height / 2 - 80;
+        int startY = this.height / 2 - 100;
 
         // 按钮 A: 修改密码
         this.addDrawableChild(ButtonWidget.builder(Text.literal("§e修改密码"), button -> {
@@ -94,8 +94,16 @@ public class ConfigScreen extends Screen {
                     .build());
         }
 
+        // 按钮 F: 高级设置
+        int advancedButtonY = config.autoJoinSubServerEnabled ? startY + 150 : startY + 120;
+        this.addDrawableChild(ButtonWidget.builder(Text.literal("§d高级设置 >>"), button -> {
+                    this.client.setScreen(new AdvancedConfigScreen(this));
+                })
+                .dimensions(centerX - 100, advancedButtonY, 200, 20)
+                .build());
+
         // 返回按钮
-        int returnButtonY = config.autoJoinSubServerEnabled ? startY + 150 : startY + 120;
+        int returnButtonY = config.autoJoinSubServerEnabled ? startY + 180 : startY + 150;
         this.addDrawableChild(ButtonWidget.builder(Text.literal("§f返回"), button -> this.close())
                 .dimensions(centerX - 100, returnButtonY, 200, 20)
                 .build());
@@ -112,7 +120,7 @@ public class ConfigScreen extends Screen {
 
         // 冲突警告：仅在"自动打开服务器菜单"和"自动进入区服"同时开启时显示
         if (config.autoOpenMenuEnabled && config.autoJoinSubServerEnabled) {
-            int warningY = this.height / 2 + 80;
+            int warningY = this.height / 2 + 90;
 
             // 使用亮红色作为警告色
             context.drawCenteredTextWithShadow(

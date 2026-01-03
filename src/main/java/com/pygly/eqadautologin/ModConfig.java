@@ -1,3 +1,4 @@
+// src/main/java/com/pygly/eqadautologin/ModConfig.java
 package com.pygly.eqadautologin;
 
 import com.google.gson.Gson;
@@ -20,6 +21,10 @@ public class ModConfig {
     public boolean autoJoinSubServerEnabled = false;
     public String targetSubServer = "sc";
 
+    public int loginDelayTicks = 20;
+    public int openMenuDelayTicks = 60;
+    public int subServerDelayTicks = 30;
+
     public static ModConfig load() {
         try {
             Files.createDirectories(CONFIG_DIR);
@@ -30,6 +35,8 @@ public class ModConfig {
                     LOGGER.info("配置已加载: 自动登录={}, 自动打开菜单={}, 自动进入区服={}, 目标区服={}",
                             config.autoLoginEnabled, config.autoOpenMenuEnabled,
                             config.autoJoinSubServerEnabled, config.targetSubServer);
+                    LOGGER.info("延迟配置: 登录={}ticks, 菜单={}ticks, 跨服={}ticks",
+                            config.loginDelayTicks, config.openMenuDelayTicks, config.subServerDelayTicks);
                     return config;
                 }
             }
@@ -48,9 +55,18 @@ public class ModConfig {
             Files.writeString(CONFIG_FILE, json);
             LOGGER.info("配置已保存: 自动登录={}, 自动打开菜单={}, 自动进入区服={}, 目标区服={}",
                     autoLoginEnabled, autoOpenMenuEnabled, autoJoinSubServerEnabled, targetSubServer);
+            LOGGER.info("延迟配置: 登录={}ticks, 菜单={}ticks, 跨服={}ticks",
+                    loginDelayTicks, openMenuDelayTicks, subServerDelayTicks);
         } catch (Exception e) {
             LOGGER.error("保存配置失败", e);
         }
+    }
+
+    public void resetToDefault() {
+        loginDelayTicks = 20;
+        openMenuDelayTicks = 60;
+        subServerDelayTicks = 30;
+        LOGGER.info("延迟配置已重置为默认值");
     }
 
     public String getSubServerDisplayName() {

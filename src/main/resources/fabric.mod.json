@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "eqad-autologin",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "name": "EQAD AutoLogin",
   "description": "为EQAD纯净服提供丝滑自动登录,支持多账号独立加密存储",
   "authors": [
