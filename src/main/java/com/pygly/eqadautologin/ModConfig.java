@@ -64,7 +64,7 @@ public class ModConfig {
 
     public void resetToDefault() {
         loginDelayTicks = 20;
-        openMenuDelayTicks = 60;
+        openMenuDelayTicks = 30;
         subServerDelayTicks = 30;
         LOGGER.info("延迟配置已重置为默认值");
     }
