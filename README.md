@@ -10,7 +10,7 @@
 </p>
 
 <div align="center">
-    <a href="https://minecraft.net"><img src="https://img.shields.io/badge/Minecraft-1.20.1-62b47a?style=for-the-badge&logo=minecraft" alt="Minecraft" /></a>
+    <a href="https://minecraft.net"><img src="https://img.shields.io/badge/Minecraft-1.21.4-62b47a?style=for-the-badge&logo=minecraft" alt="Minecraft" /></a>
     <a href="https://fabricmc.net"><img src="https://img.shields.io/badge/Fabric-Loader-F16436?style=for-the-badge&logo=fabricmc" alt="Fabric" /></a>
     <a href="LICENSE"><img src="https://img.shields.io/github/license/kerybotu/EQAD-AutoLogin?color=blue&style=for-the-badge" alt="License" /></a>
     <a href="https://github.com/kerybotu/EQAD-AutoLogin/stargazers"><img src="https://img.shields.io/github/stars/kerybotu/EQAD-AutoLogin?style=social" alt="Stars" /></a>
