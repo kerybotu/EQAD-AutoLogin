@@ -22,18 +22,16 @@
 
 多账号完全隔离:       支持（每个账号独立目录 + 独立密钥）
 
-AES本地加密:         支持（即使文件被复制也无法解密）
+AES本地加密:         支持（即使本地游戏文件文件被复制也无法解密）
 
 密码输入黑点显示:     支持（●●●● 防窥）
 
 配置存放用户目录:     支持（C:user/username/.eqadautologin/玩家名/）
 
-使用 sendCommand:     支持（100% 绕过 AuthMe 拦截）
+完全开源 MIT
 
-完全开源 MIT:         支持
+支持版本：1.21.x
 
-
-=======
 <img width="773" height="478" alt="image" src="https://github.com/user-attachments/assets/cf00174e-71f4-4cc0-b57b-7e58a3fac7a2" />
 
 <img width="781" height="178" alt="image" src="https://github.com/user-attachments/assets/cf53ed6f-056d-4121-a706-5b5c70e407ab" />
