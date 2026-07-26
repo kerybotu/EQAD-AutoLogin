@@ -11,8 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ModConfig {
-    private static final Logger LOGGER = LoggerFactory.getLogger("eqad-autologin-config");
-    private static final Path CONFIG_DIR = Paths.get(System.getProperty("user.home"), ".eqad-autologin");
+    private static final Logger LOGGER = LoggerFactory.getLogger("eqad_autologin-config");
+    private static final Path CONFIG_DIR = Paths.get(System.getProperty("user.home"), ".eqad_autologin");
     private static final Path CONFIG_FILE = CONFIG_DIR.resolve("config.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 

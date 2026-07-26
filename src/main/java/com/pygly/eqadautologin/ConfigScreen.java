@@ -104,7 +104,9 @@ public class ConfigScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         if (this.client == null) return;
-        this.renderBackground(context, mouseX, mouseY, delta);
+
+        // 先让父类画完背景和所有按钮，自定义文本放最后画，保证显示在最上层，不被背景遮罩盖住
+        super.render(context, mouseX, mouseY, delta);
 
         int centerX = this.width / 2;
         context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§6§lEQAD AutoLogin 配置"), centerX, 40, 0xFFFF00);
@@ -117,8 +119,6 @@ public class ConfigScreen extends Screen {
             context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§e和'自动进入区服'功能"), centerX, warningY + 27, 0xFFAA00);
             context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§7否则会导致进入子服后重复弹出菜单"), centerX, warningY + 39, 0xAAAAAA);
         }
-
-        super.render(context, mouseX, mouseY, delta);
     }
 
     @Override

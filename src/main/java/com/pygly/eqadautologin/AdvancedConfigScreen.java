@@ -120,7 +120,9 @@ public class AdvancedConfigScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         if (this.client == null) return;
-        this.renderBackground(context, mouseX, mouseY, delta);
+
+        // 先让父类画完背景和所有控件,自定义文本放最后画,保证显示在最上层
+        super.render(context, mouseX, mouseY, delta);
 
         int centerX = this.width / 2;
         int startY = this.height / 2 - 70;
@@ -152,8 +154,6 @@ public class AdvancedConfigScreen extends Screen {
 
         context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§71 tick = 0.05秒, 20 ticks = 1秒"), centerX, this.height - 60, 0xAAAAAA);
         context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§7建议范围: 10-200 ticks (0.5-10秒)"), centerX, this.height - 45, 0xAAAAAA);
-
-        super.render(context, mouseX, mouseY, delta);
     }
 
     @Override

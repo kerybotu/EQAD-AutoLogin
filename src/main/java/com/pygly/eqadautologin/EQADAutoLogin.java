@@ -6,10 +6,15 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -135,23 +140,66 @@ public class EQADAutoLogin {
         });
 
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (screen instanceof MultiplayerScreen multiplayerScreen) {
+            if (screen instanceof OptionsScreen optionsScreen) {
+                int width = optionsScreen.width;
+                int height = optionsScreen.height;
+                int x = width / 2 - 100;
+                int y = height - 55;
 
-                int width = multiplayerScreen.width;
-                int height = multiplayerScreen.height;
-
-                ButtonWidget settingsButton = ButtonWidget.builder(
-                                Text.literal("§6" + CHAT_PREFIX + " 设置密码"),
-                                (button) -> {
-                                    MinecraftClient.getInstance().setScreen(new PasswordScreen(multiplayerScreen));
-                                }
-                        )
-                        .dimensions(5, height - 30, 160, 20)
-                        .build();
-
-                ((List) multiplayerScreen.children()).add(settingsButton);
+                ButtonWidget existing = optionsScreenButtons.get(optionsScreen);
+                if (existing != null) {
+                    // 同一个界面实例只是分辨率/缩放变化重新 init 了一次,
+                    // 直接挪动已有按钮的位置,不要再加一个新的,避免出现重复按钮。
+                    existing.setPosition(x, y);
+                } else {
+                    ButtonWidget configButton = ButtonWidget.builder(
+                                    Text.literal("§b§l自动登录选项"),
+                                    (button) -> MinecraftClient.getInstance().setScreen(new ConfigScreen(optionsScreen))
+                            )
+                            .dimensions(x, y, 200, 20)
+                            .build();
+                    addDrawableChild(optionsScreen, configButton);
+                    optionsScreenButtons.put(optionsScreen, configButton);
+                }
             }
         });
+    }
+
+    // 用弱引用表按界面实例记录已经加过的按钮,界面被真正关闭销毁后会被 GC 自动回收,不会内存泄漏
+    private static final Map<Screen, ButtonWidget> optionsScreenButtons = new WeakHashMap<>();
+
+    // 缓存查找结果,避免每次加按钮都重新遍历一次方法列表
+    private static Method addDrawableChildMethod;
+
+    /**
+     * Screen#addDrawableChild 是 protected 方法,Mixin 之外没法直接调用,用反射绕开访问权限限制。
+     * 注意:不能直接用方法名字符串 "addDrawableChild" 去查找 —— Loom 只会重映射真正的方法调用,
+     * 不会重映射普通字符串常量,所以在正式游戏(生产环境)里这个方法的真实名字其实是
+     * 类似 method_37063 这种内部代号,用字面名字反射会找不到(NoSuchMethodException)。
+     * 这里改成按"方法长相"查找:在 Screen 类的方法里找参数是 1 个 Element、返回值也是 Element 的那个,
+     * 这个特征无论方法叫什么名字都是唯一的,开发环境和正式游戏里都能稳定找到。
+     */
+    private static Method getAddDrawableChildMethod() {
+        if (addDrawableChildMethod != null) return addDrawableChildMethod;
+
+        for (Method m : Screen.class.getDeclaredMethods()) {
+            if (m.getParameterCount() == 1
+                    && m.getParameterTypes()[0].equals(Element.class)
+                    && m.getReturnType().equals(Element.class)) {
+                m.setAccessible(true);
+                addDrawableChildMethod = m;
+                return m;
+            }
+        }
+        throw new IllegalStateException("在 Screen 类里没能找到 addDrawableChild 方法,可能是 Minecraft 版本 API 发生了更大变化");
+    }
+
+    private static <T extends Element & Drawable & Selectable> void addDrawableChild(Screen screen, T widget) {
+        try {
+            getAddDrawableChildMethod().invoke(screen, widget);
+        } catch (Exception e) {
+            LOGGER.error("通过反射添加按钮失败", e);
+        }
     }
 
     private static void performAutoLogin(MinecraftClient client) {
