@@ -1,0 +1,6 @@
+accessWidener v2 named
+
+# 把 Screen#addDrawableChild 从 protected 开放为可调用，
+# 这样就不用再靠反射猜方法（反射按参数/返回值特征匹配在泛型擦除后
+# 会跟 addSelectableChild / addDrawable 撞成一样的签名，可能选错方法）。
+accessible method net/minecraft/client/gui/screen/Screen addDrawableChild (Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;

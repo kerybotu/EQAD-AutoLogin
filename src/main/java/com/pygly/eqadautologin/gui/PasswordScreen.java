@@ -1,13 +1,20 @@
-package com.pygly.eqadautologin;
+package com.pygly.eqadautologin.gui;
 
+import com.pygly.eqadautologin.EQADConstants;
+import com.pygly.eqadautologin.auth.PasswordVault;
+import com.pygly.eqadautologin.feature.AutoLoginController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PasswordScreen extends Screen {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EQADConstants.MOD_ID + "-password-screen");
+
     private Screen parent;
     private TextFieldWidget passwordField;
     private String actualPassword = "";
@@ -26,12 +33,7 @@ public class PasswordScreen extends Screen {
         int centerY = this.height / 2;
 
         passwordField = new TextFieldWidget(
-                this.textRenderer,
-                centerX - 100,
-                centerY - 10,
-                200,
-                20,
-                Text.literal("密码")
+                this.textRenderer, centerX - 100, centerY - 10, 200, 20, Text.literal("密码")
         );
         passwordField.setMaxLength(128);
         passwordField.setChangedListener(text -> actualPassword = text);
@@ -45,17 +47,19 @@ public class PasswordScreen extends Screen {
 
         this.addDrawableChild(ButtonWidget.builder(Text.literal("确定"), button -> {
                     if (actualPassword.isEmpty()) {
-                        this.client.inGameHud.getChatHud().addMessage(Text.literal("§c" + EQADAutoLogin.CHAT_PREFIX + " 密码不能为空！"));
+                        this.client.inGameHud.getChatHud().addMessage(Text.literal("§c" + EQADConstants.CHAT_PREFIX + " 密码不能为空！"));
                         return;
                     }
                     try {
-                        EQADAutoLogin.setAndSaveDefaultPassword(actualPassword, this.client);
-                        this.client.inGameHud.getChatHud().addMessage(Text.literal("§a§l" + EQADAutoLogin.CHAT_PREFIX + " 密码已安全保存！"));
-                        EQADAutoLogin.performLoginCommand(this.client, actualPassword);
+                        PasswordVault.getInstance().setAndSaveDefaultPassword(actualPassword, this.client);
+                        this.client.inGameHud.getChatHud().addMessage(Text.literal("§a§l" + EQADConstants.CHAT_PREFIX + " 密码已安全保存！"));
+
+                        AutoLoginController.getInstance().performLoginCommand(this.client, actualPassword);
+
                         this.close();
                     } catch (Exception e) {
-                        EQADAutoLogin.LOGGER.error("密码保存失败", e);
-                        this.client.inGameHud.getChatHud().addMessage(Text.literal("§c" + EQADAutoLogin.CHAT_PREFIX + " 保存失败"));
+                        LOGGER.error("密码保存失败", e);
+                        this.client.inGameHud.getChatHud().addMessage(Text.literal("§c" + EQADConstants.CHAT_PREFIX + " 保存失败"));
                     }
                 })
                 .dimensions(centerX - 102, centerY + 20, 100, 20)
@@ -70,16 +74,15 @@ public class PasswordScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         if (this.client == null) return;
-        this.renderBackground(context, mouseX, mouseY, delta);
-
-        int centerX = this.width / 2;
-        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§6§lEQAD 纯净服自动登录"), centerX, 35, 0xFFFF00);
-        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§e请只输入密码（如：123456）"), centerX, 65, 0xFFFFFF);
-        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§7密码已加密存储于你的用户目录"), centerX, 85, 0xAAAAAA);
-        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§7每个账号独立保存，永不泄露"), centerX, 100, 0xAAAAAA);
-        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§7可在多人游戏界面随时修改"), centerX, 115, 0xAAAAAA);
 
         super.render(context, mouseX, mouseY, delta);
+
+        int centerX = this.width / 2;
+        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§6§lEQAD 纯净服自动登录"), centerX, 35, 0xFFFFFF00);
+        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§e请只输入密码（如：123456）"), centerX, 65, 0xFFFFFFFF);
+        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§7密码已加密存储于你的用户目录"), centerX, 85, 0xFFAAAAAA);
+        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§7每个账号独立保存，永不泄露"), centerX, 100, 0xFFAAAAAA);
+        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§7可在游戏选项界面随时修改"), centerX, 115, 0xFFAAAAAA);
     }
 
     @Override

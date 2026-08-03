@@ -1,8 +1,8 @@
-// src/main/java/com/pygly/eqadautologin/ModConfig.java
-package com.pygly.eqadautologin;
+package com.pygly.eqadautologin.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.pygly.eqadautologin.EQADConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,11 +10,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * 持久化配置。逻辑和之前基本一致，只是加了个单例入口 getInstance()，
+ * 各处不用再经过 EQADAutoLogin.getConfig() 这层转发。
+ */
 public class ModConfig {
-    private static final Logger LOGGER = LoggerFactory.getLogger("eqad_autologin-config");
-    private static final Path CONFIG_DIR = Paths.get(System.getProperty("user.home"), ".eqad_autologin");
+    private static final Logger LOGGER = LoggerFactory.getLogger(EQADConstants.MOD_ID + "-config");
+    private static final Path CONFIG_DIR = Paths.get(System.getProperty("user.home"), "." + EQADConstants.MOD_ID);
     private static final Path CONFIG_FILE = CONFIG_DIR.resolve("config.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
+    private static ModConfig instance;
 
     public boolean autoLoginEnabled = true;
     public boolean autoOpenMenuEnabled = false;
@@ -25,7 +31,14 @@ public class ModConfig {
     public int openMenuDelayTicks = 60;
     public int subServerDelayTicks = 30;
 
-    public static ModConfig load() {
+    public static ModConfig getInstance() {
+        if (instance == null) {
+            instance = load();
+        }
+        return instance;
+    }
+
+    private static ModConfig load() {
         try {
             Files.createDirectories(CONFIG_DIR);
             if (Files.exists(CONFIG_FILE)) {
@@ -51,8 +64,7 @@ public class ModConfig {
     public void save() {
         try {
             Files.createDirectories(CONFIG_DIR);
-            String json = GSON.toJson(this);
-            Files.writeString(CONFIG_FILE, json);
+            Files.writeString(CONFIG_FILE, GSON.toJson(this));
             LOGGER.info("配置已保存: 自动登录={}, 自动打开菜单={}, 自动进入区服={}, 目标区服={}",
                     autoLoginEnabled, autoOpenMenuEnabled, autoJoinSubServerEnabled, targetSubServer);
             LOGGER.info("延迟配置: 登录={}ticks, 菜单={}ticks, 跨服={}ticks",

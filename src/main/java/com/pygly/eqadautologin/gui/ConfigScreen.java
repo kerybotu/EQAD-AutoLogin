@@ -1,6 +1,7 @@
-package com.pygly.eqadautologin;
+package com.pygly.eqadautologin.gui;
 
-import net.minecraft.client.MinecraftClient;
+import com.pygly.eqadautologin.EQADConstants;
+import com.pygly.eqadautologin.config.ModConfig;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -8,12 +9,12 @@ import net.minecraft.text.Text;
 
 public class ConfigScreen extends Screen {
     private final Screen parent;
-    private ModConfig config;
+    private final ModConfig config;
 
     public ConfigScreen(Screen parent) {
         super(Text.literal("§6§lEQAD AutoLogin 配置"));
         this.parent = parent;
-        this.config = EQADAutoLogin.getConfig();
+        this.config = ModConfig.getInstance();
     }
 
     @Override
@@ -37,7 +38,7 @@ public class ConfigScreen extends Screen {
                     this.clearAndInit();
                     if (this.client != null) {
                         this.client.inGameHud.getChatHud().addMessage(
-                                Text.literal("§a" + EQADAutoLogin.CHAT_PREFIX + " 自动登录已" + (config.autoLoginEnabled ? "开启" : "关闭"))
+                                Text.literal("§a" + EQADConstants.CHAT_PREFIX + " 自动登录已" + (config.autoLoginEnabled ? "开启" : "关闭"))
                         );
                     }
                 })
@@ -51,7 +52,7 @@ public class ConfigScreen extends Screen {
                     this.clearAndInit();
                     if (this.client != null) {
                         this.client.inGameHud.getChatHud().addMessage(
-                                Text.literal("§a" + EQADAutoLogin.CHAT_PREFIX + " 自动打开菜单已" + (config.autoOpenMenuEnabled ? "开启" : "关闭"))
+                                Text.literal("§a" + EQADConstants.CHAT_PREFIX + " 自动打开菜单已" + (config.autoOpenMenuEnabled ? "开启" : "关闭"))
                         );
                     }
                 })
@@ -65,7 +66,7 @@ public class ConfigScreen extends Screen {
                     this.clearAndInit();
                     if (this.client != null) {
                         this.client.inGameHud.getChatHud().addMessage(
-                                Text.literal("§a" + EQADAutoLogin.CHAT_PREFIX + " 自动进入区服已" + (config.autoJoinSubServerEnabled ? "开启" : "关闭"))
+                                Text.literal("§a" + EQADConstants.CHAT_PREFIX + " 自动进入区服已" + (config.autoJoinSubServerEnabled ? "开启" : "关闭"))
                         );
                     }
                 })
@@ -80,7 +81,7 @@ public class ConfigScreen extends Screen {
                         this.clearAndInit();
                         if (this.client != null) {
                             this.client.inGameHud.getChatHud().addMessage(
-                                    Text.literal("§a" + EQADAutoLogin.CHAT_PREFIX + " 目标区服已切换为: §f" + config.getSubServerDisplayName())
+                                    Text.literal("§a" + EQADConstants.CHAT_PREFIX + " 目标区服已切换为: §f" + config.getSubServerDisplayName())
                             );
                         }
                     })
@@ -105,19 +106,20 @@ public class ConfigScreen extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         if (this.client == null) return;
 
-        // 先让父类画完背景和所有按钮，自定义文本放最后画，保证显示在最上层，不被背景遮罩盖住
+        // 先让父类画完背景和所有按钮，自定义文本放最后画，保证显示在最上层，
+        // 且只让 super.render() 触发一次背景模糊（1.21.x 一帧内模糊两次会崩）
         super.render(context, mouseX, mouseY, delta);
 
         int centerX = this.width / 2;
-        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§6§lEQAD AutoLogin 配置"), centerX, 40, 0xFFFF00);
-        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§7点击按钮切换功能状态"), centerX, 60, 0xAAAAAA);
+        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§6§lEQAD AutoLogin 配置"), centerX, 40, 0xFFFFFF00);
+        context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§7点击按钮切换功能状态"), centerX, 60, 0xFFAAAAAA);
 
         if (config.autoOpenMenuEnabled && config.autoJoinSubServerEnabled) {
             int warningY = this.height / 2 + 90;
-            context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§c⚠ 警告 ⚠"), centerX, warningY, 0xFF5555);
-            context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§e不建议同时开启'自动打开服务器菜单'"), centerX, warningY + 15, 0xFFAA00);
-            context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§e和'自动进入区服'功能"), centerX, warningY + 27, 0xFFAA00);
-            context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§7否则会导致进入子服后重复弹出菜单"), centerX, warningY + 39, 0xAAAAAA);
+            context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§c⚠ 警告 ⚠"), centerX, warningY, 0xFFFF5555);
+            context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§e不建议同时开启'自动打开服务器菜单'"), centerX, warningY + 15, 0xFFFFAA00);
+            context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§e和'自动进入区服'功能"), centerX, warningY + 27, 0xFFFFAA00);
+            context.drawCenteredTextWithShadow(this.textRenderer, Text.literal("§7否则会导致进入子服后重复弹出菜单"), centerX, warningY + 39, 0xFFAAAAAA);
         }
     }
 

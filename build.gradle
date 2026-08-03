@@ -10,6 +10,10 @@ base {
     archivesName = project.archives_base_name
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/eqad_autologin.accesswidener")
+}
+
 repositories {
     mavenCentral()
 }
@@ -43,7 +47,7 @@ java {
 jar {
     inputs.property "archivesName", project.base.archivesName
     from("LICENSE") {
-        rename { "${it}_${inputs.properties.archivesName}"}
+        rename { "${it}_${inputs.properties.archivesName}" }
     }
 }
 
